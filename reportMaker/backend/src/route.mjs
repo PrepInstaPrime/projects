@@ -1,7 +1,7 @@
 import express from "express";
 const router = express.Router();
 import { registerUser, loginUser, getUser, updateUser } from "./controllers/userController.mjs";
-import { createReport, getReports, getMyCreatedReports, updateReport } from "./controllers/reportController.mjs";
+import { createReport, getReports, getMyCreatedReports, updateReport, getReportPdf } from "./controllers/reportController.mjs";
 import { authenticate,authorize } from "./auth/authentication.mjs";
 router.post("/register", registerUser);
 router.post("/login", loginUser);
@@ -11,4 +11,5 @@ router.post("/create", authenticate, authorize, createReport);
 router.get("/getreports", authenticate, getReports);
 router.get("/mycreatedreports", authenticate, getMyCreatedReports);
 router.put("/updatereport/:reportId", authenticate, updateReport);
+router.get("/reports/:reportId/pdf", authenticate, getReportPdf);
 export default router;

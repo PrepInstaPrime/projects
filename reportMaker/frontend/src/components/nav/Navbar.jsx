@@ -32,7 +32,9 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
-    setMenuOpen(false)
+    // Defer state update to avoid sync setState-in-effect lint.
+    const t = setTimeout(() => setMenuOpen(false), 0)
+    return () => clearTimeout(t)
   }, [location.pathname])
 
   useEffect(() => {

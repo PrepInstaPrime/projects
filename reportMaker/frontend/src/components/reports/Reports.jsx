@@ -188,8 +188,21 @@ export default function Reports() {
           .replace(/^-+|-+$/g, '')
           .slice(0, 40) || 'report'
       const idBit = String(selected._id || '').slice(-8)
-      const { downloadReportPdf } = await import('../../utils/reportPdf.js')
-      await downloadReportPdf(pdfRef.current, `${slug}-${idBit}.pdf`)
+      // Option B: Server-side Chrome "Print to PDF" for best quality.
+      const url = `${serverUrl}/reports/${selected._id}/pdf`
+      const res = await axios.get(url, {
+        headers: authHeaders(),
+        responseType: 'blob',
+      })
+      const blob = new Blob([res.data], { type: 'application/pdf' })
+      const objectUrl = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = objectUrl
+      a.download = `${slug}-${idBit}.pdf`
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
+      URL.revokeObjectURL(objectUrl)
     } catch (e) {
       console.error(e)
       setPdfError(
